@@ -35,7 +35,7 @@ class EditPasswordForm extends BaseProfileForm
             ->schema([
                 Section::make(__('filament-edit-profile::default.update_password'))
                     ->aside()
-                    ->description(__('filament-edit-profile::default.ensure_your_password'))
+                    ->description(new HtmlString(__('filament-edit-profile::default.ensure_your_password'))
                     ->schema([
                         TextInput::make('Current password')
                             ->label(__('filament-edit-profile::default.current_password'))
