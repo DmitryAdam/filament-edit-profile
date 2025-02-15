@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Joaopaulolndev\FilamentEditProfile\Concerns\HasUser;
 
+use Illuminate\Support\HtmlString;
+use AbanoubNassem\FilamentGRecaptchaField\Forms\Components\GRecaptcha;
+
+
+
 class EditPasswordForm extends BaseProfileForm
 {
     use HasUser;
@@ -35,7 +40,7 @@ class EditPasswordForm extends BaseProfileForm
             ->schema([
                 Section::make(__('filament-edit-profile::default.update_password'))
                     ->aside()
-                    ->description(new HtmlString(__('filament-edit-profile::default.ensure_your_password'))
+                    ->description(fn() => new HtmlString(__('filament-edit-profile::default.ensure_your_password')))
                     ->schema([
                         TextInput::make('Current password')
                             ->label(__('filament-edit-profile::default.current_password'))
@@ -49,7 +54,7 @@ class EditPasswordForm extends BaseProfileForm
                             ->required()
                             ->rule(Password::default())
                             ->autocomplete('new-password')
-                            ->dehydrateStateUsing(fn ($state): string => Hash::make($state))
+                            ->dehydrateStateUsing(fn($state): string => Hash::make($state))
                             ->live(debounce: 500)
                             ->same('passwordConfirmation')
                             ->revealable(),
@@ -59,6 +64,8 @@ class EditPasswordForm extends BaseProfileForm
                             ->required()
                             ->dehydrated(false)
                             ->revealable(),
+                        GRecaptcha::make('captcha')
+                            ->required()
                     ]),
             ])
             ->model($this->getUser())
